@@ -1,38 +1,38 @@
 ```mermaid
 sequenceDiagram
     participant Customer
-    participant Payment Initiation Module
-    participant Account Validation Module
-    participant Balance Check Module
-    participant Transaction Logging Module
-    participant Internal Ledger
-    participant Outgoing Payment Gateway
+    participant Payment Input Service (OBP)
+    participant Entitlement & Validation Service (OBP)
+    participant Funds Availability Service (OBP)
+    participant Posting Service (OBP)
+    participant Transaction Management Service (OBP)
+    participant Account Ledger (OBP)
+    participant Payment Gateway Interface (OBP)
 
-    Customer->>Payment Initiation Module: Initiates Payment
-    Payment Initiation Module->>Account Validation Module: Validate Sender Account
-    Account Validation Module->>Internal Ledger: Retrieve Account Details
-    Internal Ledger-->>Account Validation Module: Account Details
-    Account Validation Module-->>Payment Initiation Module: Account Validated
+    Customer->>Payment Input Service (OBP): Initiates Payment
+    Payment Input Service (OBP)->>Entitlement & Validation Service (OBP): Validate Payment & User
+    Entitlement & Validation Service (OBP)-->>Payment Input Service (OBP): Validation Result
 
-    Payment Initiation Module->>Account Validation Module: Validate Receiver Account Details
-    Account Validation Module->>Internal Ledger: Retrieve Receiver Account Details
-    Internal Ledger-->>Account Validation Module: Receiver Account Details
-    Account Validation Module-->>Payment Initiation Module: Receiver Account Validated
+    Payment Input Service (OBP)->>Funds Availability Service (OBP): Check Funds Availability
+    Funds Availability Service (OBP)->>Account Ledger (OBP): Retrieve Account Balance
+    Account Ledger (OBP)-->>Funds Availability Service (OBP): Account Balance
+    Funds Availability Service (OBP)-->>Payment Input Service (OBP): Funds Check Result
 
-    Payment Initiation Module->>Balance Check Module: Check Sufficient Funds
-    Balance Check Module->>Internal Ledger: Retrieve Sender Balance
-    Internal Ledger-->>Balance Check Module: Sender Balance
-    Balance Check Module-->>Payment Initiation Module: Funds Check Result
+    alt Funds Available
+        Payment Input Service (OBP)->>Posting Service (OBP): Initiate Debit Posting
+        Posting Service (OBP)->>Account Ledger (OBP): Debit Sender Account
+        Account Ledger (OBP)-->>Posting Service (OBP): Debit Confirmation
 
-    alt Sufficient Funds
-        Payment Initiation Module->>Internal Ledger: Debit Sender Account
-        Internal Ledger-->>Payment Initiation Module: Debit Successful
-        Payment Initiation Module->>Transaction Logging Module: Log Transaction
-        Transaction Logging Module->>Internal Ledger: Record Transaction
-        Internal Ledger-->>Transaction Logging Module: Logged
+        Payment Input Service (OBP)->>Posting Service (OBP): Initiate Credit Posting (Internal Transfer)
+        Posting Service (OBP)->>Account Ledger (OBP): Credit Receiver Account
+        Account Ledger (OBP)-->>Posting Service (OBP): Credit Confirmation
 
-        Payment Initiation Module->>Outgoing Payment Gateway: Forward Payment Instruction
-    else Insufficient Funds
-        Payment Initiation Module-->>Customer: Insufficient Funds Notification
+        Payment Input Service (OBP)->>Transaction Management Service (OBP): Log Transaction Details
+        Transaction Management Service (OBP)->>Account Ledger (OBP): Record Transaction
+        Account Ledger (OBP)-->>Transaction Management Service (OBP): Transaction Logged
+
+        Payment Input Service (OBP)->>Payment Gateway Interface (OBP): Forward Payment (if external)
+    else Funds Not Available
+        Payment Input Service (OBP)-->>Customer: Insufficient Funds Notification
     end
 ```
