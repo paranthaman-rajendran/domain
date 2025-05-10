@@ -1,7 +1,7 @@
 ```mermaid
 sequenceDiagram
-    participant SenderBank as Sender Bank
     participant Sender
+    participant SenderBank as Sender Bank
     participant ThirdPartyBank as Third-Party Bank
     participant ReceiverBank as Receiver Bank
     participant Receiver
