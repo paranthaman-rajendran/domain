@@ -1,17 +1,19 @@
+```mermaid
 sequenceDiagram
-    participant Sender Bank
+    participant SenderBank as Sender Bank
     participant Sender
-    participant Third-Party Bank
-    participant Receiver Bank
+    participant ThirdPartyBank as Third-Party Bank
+    participant ReceiverBank as Receiver Bank
     participant Receiver
 
-    Sender->>Sender Bank: Initiates Payment Request
-    Sender Bank->>Third-Party Bank: Sends Payment Instruction
-    Third-Party Bank->>Third-Party Bank: Performs Compliance Checks
-    Third-Party Bank->>Third-Party Bank: Converts Currency (if needed)
-    Third-Party Bank->>Receiver Bank: Forwards Payment Instruction
-    Receiver Bank->>Receiver Bank: Posts Payment to Account
-    Receiver Bank->>Receiver: Notifies Payment Received
-    Receiver Bank-->>Third-Party Bank: Sends Payment Confirmation
-    Third-Party Bank-->>Sender Bank: Sends Payment Confirmation
-    Sender Bank-->>Sender: Notifies Payment Processed
+    Sender->>SenderBank: Initiates Payment Request
+    SenderBank->>ThirdPartyBank: Sends Payment Instruction
+    ThirdPartyBank->>ThirdPartyBank: Performs Compliance Checks
+    ThirdPartyBank->>ThirdPartyBank: Converts Currency (if needed)
+    ThirdPartyBank->>ReceiverBank: Forwards Payment Instruction
+    ReceiverBank->>ReceiverBank: Posts Payment to Account
+    ReceiverBank->>Receiver: Notifies Payment Received
+    ReceiverBank-->>ThirdPartyBank: Sends Payment Confirmation
+    ThirdPartyBank-->>SenderBank: Sends Payment Confirmation
+    SenderBank-->>Sender: Notifies Payment Processed
+```
